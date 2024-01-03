@@ -17,7 +17,7 @@ create table stores(
     foreign key(chainid) references chains(chainid)
 );
 
-create table items(
+create table storeitems(
     chainid text not null,
     subchainid text not null,
     storeid text not null
