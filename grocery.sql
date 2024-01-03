@@ -3,10 +3,9 @@ create table chains(
     chain text);
 
 create table stores(
-    storepk integer primary key,
-    chainid text,
-    subchainid text,
-    storeid text,
+    chainid text not null,
+    subchainid text not null,
+    storeid text not null,
     bikoretno text,
     storetype text,
     subchainname text,
@@ -14,14 +13,15 @@ create table stores(
     address text,
     city text,
     zipcode text,
+    primary key(chainid, subchainid, storeid),
     foreign key(chainid) references chains(chainid)
 );
 
-create table subchainitems(
-    subchainitempk integer primary key,
-    chainid text,
-    subchainid text,
-    itemcode text,
+create table items(
+    chainid text not null,
+    subchainid text not null,
+    storeid text not null
+    itemcode text not null,
     itemtype text,
     manufacturername text,
     manufacturercountry text,
@@ -31,27 +31,22 @@ create table subchainitems(
     bisweighted text,
     unitofmeasure text,
     qtyinpackage text,
-    foreign key(chainid) references chains(chainid)
-);
-
-
-create table storeprices(
-    storepricepk integer primary key,
-    storepk integer,
-    subchainitempk integer,
     itemprice numeric,
     unitofmeasureprice numeric,
     allowdiscount text,
     itemstatus text,
     priceupdatedate text,
-    foreign key(storepk) references stores(storepk),
-    foreign key(subchainitempk) references subchainitems(subchainitempk)
+    primary key (chainid, subchainid, storeid, itemcode),
+    foreign key (chainid, subchainid, storeid) references stores(chainid, subchainid, storeid),
+    foreign key(chainid) references chains(chainid)
 );
 
+
 create table promotions(
-    promotionpk integer primary key,
-    storepk integer,
-    promotionid text,
+    chainid text not null,
+    subchainid text not null,
+    storeid text not null
+    promotionid text not null,
     allowmultiplediscounts text,
     promotiondescription text,
     promotionupdatedate date,
@@ -66,16 +61,20 @@ create table promotions(
     minnoofitemofered int,
     additionalrestrictions text,
     clubs text,
-    foreign key(storepk) references stores(storepk)
+    primary key(chainid, subchainid, storeid, promotionid),
+    foreign key(chainid, subchainid, storeid) references stores(chainid, subchainid, storeid)
 );
 
 create table promotionitems(
-    promotionitempk integer primary key,
-    promotionpk integer,
-    itemcode text,
+    chainid text not null,
+    subchainid text not null,
+    storeid text not null
+    promotionid text not null,
+    itemcode text not null,
     itemtype text,
     isgiftitem text,
-    foreign key(promotionpk) references promotions(promotionpk)
+    primary key(chainid, subchainid, storeid, promotionid, itemcode),
+    foreign key(chainid, subchainid, storeid, promotionid) references promotions(chainid, subchainid, storeid, promotionid)
 );
 
 
