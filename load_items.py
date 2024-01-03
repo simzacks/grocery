@@ -20,7 +20,8 @@ def insert_items(item_path, db):
     item_vals = []
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    for item in item:
+    items = root.find("items")
+    for item in items:
         item_vals.append(tuple(root_vals + [element.text for element in 
                                 map(item.find, item_fields)]))
     
