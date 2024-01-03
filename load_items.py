@@ -6,26 +6,25 @@ import argparse
 def insert_items(item_path, db):
     tree = ET.parse(item_path)
     root = tree.getroot()
-    chainid = root[0][0].text
-    items = root[0][1]
-    item_fields = ["chainid", "subchainid", "storeid", "itemcode", "itemtype",
+    root_fields = ["chainid", "subchainid", "storeid"]
+    root_vals = [element.text for element in map(root.find, root_fields)]
+    item_fields = ["itemcode", "itemtype",
                    "manufacturername", "manufacturercountry",
                    "manufactureritemdescription", "unitqty", "quantity",
                    "bisweighted", "itemprice", "unitofmeasureprice",
                    "allowdiscount", "itemstatus", "priceupdatedate"]
-    item_cnt = ("?," * len(item_fields))[:-1]
-    item_insert = "insert into subchainitems({}) values({})".format(
-        ",".join(item_fields), item_cnt)
+    all_fields = root_fields + item_fields
+    fld_cnt = ("?," * len(all_fields))[:-1]
+    item_insert = "insert into storeitems({}) values({})".format(
+        ",".join(all_fields), fld_cnt)
     item_vals = []
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("select storepk from stores where chainid=? and " \
-                "subchainid=? and storeid=?", 
     for item in item:
-        item_vals.append(tuple([element.text for element in 
+        item_vals.append(tuple(root_vals + [element.text for element in 
                                 map(item.find, item_fields)]))
     
-    cur.executemany(insert, vals)
+    cur.executemany(item_insert, vals)
     conn.commit()
     conn.close()
 
