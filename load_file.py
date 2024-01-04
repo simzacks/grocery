@@ -99,4 +99,4 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--function",choices=list(functions.keys()),
                         help="The path of the sqlite database", required=True)
     args = parser.parse_args()
-    insert_items(args.path, args.db)
+    functions[args.function](args.path, args.db)
