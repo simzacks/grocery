@@ -7,6 +7,11 @@ def insert_file(tablename, root_fields, obj_fields, obj_node, file_path, db,
                 obj2_fields=None, obj2_node=None):
     tree = ET.parse(file_path)
     root = tree.getroot()
+    while 1:
+        if root.find(root_fields[0]) is None:
+            root = root[0]
+        else:
+            break
     root_vals = [element.text for element in map(root.find, root_fields)]
     all_fields = root_fields + obj_fields
     if obj2_fields:
