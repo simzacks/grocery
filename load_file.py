@@ -14,6 +14,10 @@ def insert_file(tablename, root_fields, obj_fields, obj_node, file_path, db,
     fld_cnt = ("?," * len(all_fields))[:-1]
     insert = "insert into {}({}) values({})".format(
         tablename, ",".join(all_fields), fld_cnt)
+    upsert = " on conflict do update set "
+    for field in all_fields:
+        upsert += "{}=excluded.{}, ".format(field, field)
+    upsert = upsert[:-1]
     data = []
     data_nodes = root.find(obj_node)
     for data_node in data_nodes:
@@ -30,7 +34,7 @@ def insert_file(tablename, root_fields, obj_fields, obj_node, file_path, db,
     
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.executemany(insert, vals)
+    cur.executemany(insert + upsert, vals)
     conn.commit()
     conn.close()
 
