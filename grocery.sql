@@ -20,7 +20,7 @@ create table stores(
 create table storeitems(
     chainid text not null,
     subchainid text not null,
-    storeid text not null
+    storeid text not null,
     itemcode text not null,
     itemtype text,
     manufacturername text,
@@ -45,7 +45,7 @@ create table storeitems(
 create table promotions(
     chainid text not null,
     subchainid text not null,
-    storeid text not null
+    storeid text not null,
     promotionid text not null,
     allowmultiplediscounts text,
     promotiondescription text,
@@ -68,7 +68,7 @@ create table promotions(
 create table promotionitems(
     chainid text not null,
     subchainid text not null,
-    storeid text not null
+    storeid text not null,
     promotionid text not null,
     itemcode text not null,
     itemtype text,
