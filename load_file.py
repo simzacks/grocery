@@ -58,7 +58,7 @@ def promotions(file_path, db):
     obj_node = "promotions"
     insert_file(tablename, root_fields, promo_fields, obj_node, file_path, db)
 
-def promotionitems(file_path, db):
+def promotion_items(file_path, db):
     root_fields = ["chainid","subchainid", "storeid"]
     promo1_fields = ["promotionid"]
     promo2_fields = ["itemcode", "itemtype", "isgiftitem"]
@@ -67,6 +67,10 @@ def promotionitems(file_path, db):
     obj2_node = "promotionitems"
     insert_file(tablename, root_fields, promo1_fields, obj1_node, file_path, db,
                 promo2_fields, obj2_node)
+
+def full_promo(file_path, db):
+    promotions(file_path, db)
+    promotion_items(file_path, db)
 
 def item_prices(file_path, db):
     root_fields = ["chainid", "subchainid", "storeid"]
@@ -81,12 +85,18 @@ def item_prices(file_path, db):
 
 
 if __name__ == "__main__":
+    functions = {}
+    functions["stores"] = stores
+    functions["items"] = item_prices
+    functions["promo"] = full_promo
     parser = argparse.ArgumentParser(
         description="Import Full Grocery Items and Price",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-p", "--path",
                         help="The path of the full price file", required=True)
     parser.add_argument("-d", "--db",
+                        help="The path of the sqlite database", required=True)
+    parser.add_argument("-f", "--function",choices=list(functions.keys()),
                         help="The path of the sqlite database", required=True)
     args = parser.parse_args()
     insert_items(args.path, args.db)
